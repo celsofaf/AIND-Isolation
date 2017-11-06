@@ -21,7 +21,7 @@ def custom_score(game, player):
     `self.score()` -- you should not need to call this function directly.
 
     Parameters
-    ----------58]: np.random.sample()
+    ----------
     game : `isolation.Board`
         An instance of `isolation.Board` encoding the current state of the
         game (e.g., player locations and blocked cells).
@@ -35,8 +35,18 @@ def custom_score(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
+    # improved_score from sample_players.py - for testing
     # TODO: finish this function!
-    raise NotImplementedError
+    
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    own_moves = len(game.get_legal_moves(player))
+    opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
+    return float(own_moves - opp_moves)
 
 
 def custom_score_2(game, player):
@@ -61,8 +71,16 @@ def custom_score_2(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
+    # open_move_score from sample_players.py - for testing
     # TODO: finish this function!
-    raise NotImplementedError
+    
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    return float(len(game.get_legal_moves(player)))
 
 
 def custom_score_3(game, player):
@@ -87,8 +105,16 @@ def custom_score_3(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
+    # null_score from sample_players.py - for testing
     # TODO: finish this function!
-    raise NotImplementedError
+    
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    return 0.
 
 
 class IsolationPlayer:
