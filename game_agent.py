@@ -3,6 +3,7 @@ test your agent's strength against a set of known agents using tournament.py
 and include the results in your report.
 """
 import random
+import isolation as iso
 
 
 class SearchTimeout(Exception):
@@ -20,7 +21,7 @@ def custom_score(game, player):
     `self.score()` -- you should not need to call this function directly.
 
     Parameters
-    ----------
+    ----------58]: np.random.sample()
     game : `isolation.Board`
         An instance of `isolation.Board` encoding the current state of the
         game (e.g., player locations and blocked cells).
@@ -209,8 +210,63 @@ class MinimaxPlayer(IsolationPlayer):
                 each helper function or else your agent will timeout during
                 testing.
         """
-        if self.time_left() < self.TIMER_THRESHOLD:
-            raise SearchTimeout()
+        
+        def terminal_test(gameState, depth):
+            """ Return True if the game is over for the active player
+            and False otherwise.
+            """
+            # if time is over, we have a search timeout
+            if self.time_left() < self.TIMER_THRESHOLD:
+                raise SearchTimeout()
+            # by Assumption 1, if active player has no remaining moves, then the state is terminal
+            n_legal_moves = len(gameState.get_legal_moves())
+            return n_legal_moves == 0 or depth <= 0
+
+        def min_value(gameState, depth):
+            """ Return the value for a win (+1) if the game is over,
+            otherwise return the minimum value over all legal child
+            nodes.
+            """
+            # The comment above relates to Assumption 2
+            if terminal_test(gameState, depth):
+                return self.score(gameState, self)
+            
+            v = float('inf')  # no game value can be higher than that
+            legal_moves = gameState.get_legal_moves()
+            for move in legal_moves:  # return minimum over all max values
+                v = min(v, max_value(gameState.forecast_move(move), depth-1))
+            return v
+
+        def max_value(gameState, depth):
+            """ Return the value for a loss (-1) if the game is over,
+            otherwise return the maximum value over all legal child
+            nodes.
+            """
+            # The comment above relates to Assumption 2
+            if terminal_test(gameState, depth):
+                return self.score(gameState, self)
+            
+            v = float('-inf')  # no game value can be lower than that
+            legal_moves = gameState.get_legal_moves()
+            for move in legal_moves:  # return maximum over all min values
+                v = max(v, min_value(gameState.forecast_move(move), depth-1))
+            return v
+        
+        legal_moves = game.get_legal_moves()
+        if len(legal_moves) == 0:
+            return (-1, -1)  # return something
+        
+        best_score = float('-inf')
+        best_move = legal_moves[0]  # there is no current best move
+        
+        for move in legal_moves:
+            v = min_value(game.forecast_move(move), depth-1)
+            if v > best_score:
+                best_score = v
+                best_move = move
+        return best_move
+        
+        #return random.choice(game.get_legal_moves())
 
         # TODO: finish this function!
         raise NotImplementedError
@@ -253,9 +309,28 @@ class AlphaBetaPlayer(IsolationPlayer):
             (-1, -1) if there are no available legal moves.
         """
         self.time_left = time_left
+        
+        # Initialize the best move so that this function returns something
+        # in case the search fails due to timeout
+        best_move = (-1, -1)
+        depth = 1
+        #depth = self.search_depth
+        
+        try:
+            # The try/except block will automatically catch the exception
+            # raised when the timer is about to expire.
+            while depth < float('inf'):
+                best_move = self.alphabeta(game, depth)
+                depth = depth + 1
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        except SearchTimeout: # Handle any actions required after timeout as needed
+            if self.time_left() > 0:
+                return best_move
+            else:
+                return (-1, -1)  # forfeits game
+
+        # Return the best move from the last completed search iteration
+        return best_move
 
     def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf")):
         """Implement depth-limited minimax search with alpha-beta pruning as
@@ -302,8 +377,71 @@ class AlphaBetaPlayer(IsolationPlayer):
                 each helper function or else your agent will timeout during
                 testing.
         """
-        if self.time_left() < self.TIMER_THRESHOLD:
-            raise SearchTimeout()
+        
+        def terminal_test(gameState, depth):
+            """ Return True if the game is over for the active player
+            and False otherwise.
+            """
+            # if time is over, we have a search timeout
+            if self.time_left() < self.TIMER_THRESHOLD:
+                raise SearchTimeout()
+            # by Assumption 1, if active player has no remaining moves, then the state is terminal
+            n_legal_moves = len(gameState.get_legal_moves())
+            return n_legal_moves == 0 or depth <= 0
+
+        def min_value(gameState, depth, alpha, beta):
+            """ Return the value for a win (+1) if the game is over,
+            otherwise return the minimum value over all legal child
+            nodes.
+            """
+            # The comment above relates to Assumption 2
+            if terminal_test(gameState, depth):
+                return self.score(gameState, self)
+            
+            v = float('inf')  # no game value can be higher than that
+            legal_moves = gameState.get_legal_moves()
+            for move in legal_moves:  # return minimum over all max values
+                v = min(v, max_value(gameState.forecast_move(move), depth-1, alpha, beta))
+                if v <= alpha:
+                    return v
+                beta = min(beta, v)
+            return v
+
+        def max_value(gameState, depth, alpha, beta):
+            """ Return the value for a loss (-1) if the game is over,
+            otherwise return the maximum value over all legal child
+            nodes.
+            """
+            # The comment above relates to Assumption 2
+            if terminal_test(gameState, depth):
+                return self.score(gameState, self)
+            
+            v = float('-inf')  # no game value can be lower than that
+            legal_moves = gameState.get_legal_moves()
+            for move in legal_moves:  # return maximum over all min values
+                v = max(v, min_value(gameState.forecast_move(move), depth-1, alpha, beta))
+                if v >= beta:  # prune
+                    return v
+                alpha = max(alpha, v)
+            return v
+        
+        legal_moves = game.get_legal_moves()
+        if len(legal_moves) == 0:
+            return (-1, -1)  # return something
+        
+        best_score = float('-inf')
+        best_move = legal_moves[0]  # there is no current best move
+        
+        for move in legal_moves:
+            v = min_value(game.forecast_move(move), depth-1, alpha, beta)
+            if v > best_score:
+                best_score = v
+                best_move = move
+            alpha = max(alpha, v)
+        return best_move
+        
+
+        #return random.choice(game.get_legal_moves())
 
         # TODO: finish this function!
         raise NotImplementedError
