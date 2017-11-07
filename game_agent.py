@@ -291,11 +291,6 @@ class MinimaxPlayer(IsolationPlayer):
                 best_score = v
                 best_move = move
         return best_move
-        
-        #return random.choice(game.get_legal_moves())
-
-        # TODO: finish this function!
-        raise NotImplementedError
 
 
 class AlphaBetaPlayer(IsolationPlayer):
@@ -350,10 +345,7 @@ class AlphaBetaPlayer(IsolationPlayer):
                 depth = depth + 1
 
         except SearchTimeout: # Handle any actions required after timeout as needed
-            if self.time_left() > 0:
-                return best_move
-            else:
-                return (-1, -1)  # forfeits game
+            return best_move
 
         # Return the best move from the last completed search iteration
         return best_move
@@ -451,6 +443,9 @@ class AlphaBetaPlayer(IsolationPlayer):
                 alpha = max(alpha, v)
             return v
         
+        if self.time_left() < self.TIMER_THRESHOLD:
+           raise SearchTimeout()
+        
         legal_moves = game.get_legal_moves()
         if len(legal_moves) == 0:
             return (-1, -1)  # return something
@@ -465,9 +460,4 @@ class AlphaBetaPlayer(IsolationPlayer):
                 best_move = move
             alpha = max(alpha, v)
         return best_move
-        
 
-        #return random.choice(game.get_legal_moves())
-
-        # TODO: finish this function!
-        raise NotImplementedError
