@@ -70,15 +70,24 @@ def custom_score_2(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # open_move_score from sample_players.py
+    # improved_score + Manhattan Distances to center (inverse)
+    
+#    def center_distance(x, y):
+#        return (x - 3)**2 + (y - 3)**2
     
     if game.is_loser(player):
         return float("-inf")
 
     if game.is_winner(player):
         return float("inf")
+    
+#    y1, x1 = game.get_player_location(player)
+#    y2, x2 = game.get_player_location(game.get_opponent(player))
 
-    return len(game.get_legal_moves(player))
+    return len(3*game.get_legal_moves(player)) - len(game.get_legal_moves(game.get_opponent(player)))
+    
+    #return center_distance(x2, y2) - center_distance(x1, y1) - len(game.get_legal_moves(game.get_opponent(player))) #+ len(game.get_legal_moves(player))
+    #return abs(y1-y2) + abs(x1-x2) + len(game.get_legal_moves(player)) - len(game.get_legal_moves(game.get_opponent(player)))
 
 
 def custom_score_3(game, player):
@@ -103,17 +112,27 @@ def custom_score_3(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # improved_score from sample_players.py
+    # improved_score + Manhattan Distances to center (inverse)
+    
+#    def center_distance(x, y):
+#        return (x - 3)**2 + (y - 3)**2
     
     if game.is_loser(player):
         return float("-inf")
 
     if game.is_winner(player):
         return float("inf")
+    
+#    y1, x1 = game.get_player_location(player)
+#    y2, x2 = game.get_player_location(game.get_opponent(player))
 
-    #own_moves = len(game.get_legal_moves(player))
-    #opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-    return len(game.get_legal_moves(player)) - len(game.get_legal_moves(game.get_opponent(player)))
+    moves = set(game.get_legal_moves(player))
+    for move in moves.copy():
+        moves = moves.union(game.forecast_move(move).get_legal_moves(player))
+    
+    return len(moves)
+    #return center_distance(x2, y2) - center_distance(x1, y1)# + len(game.get_legal_moves(player)) - len(game.get_legal_moves(game.get_opponent(player)))
+
 
 def custom_score_4(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -139,15 +158,27 @@ def custom_score_4(game, player):
     """
     # improved_score from sample_players.py with weights for aggressive player
     
+#    def center_proximity(x, y):
+#        return 9 - ((x - 3)**2 + (y - 3)**2)
+    
     if game.is_loser(player):
         return float("-inf")
 
     if game.is_winner(player):
         return float("inf")
+    
+#    y1, x1 = game.get_player_location(player)
+#    y2, x2 = game.get_player_location(game.get_opponent(player))
+    
+    moves = set(game.get_legal_moves(player))
+    for move in moves.copy():
+        moves = moves.union(game.forecast_move(move).get_legal_moves(player))
+    
+    return len(moves) - len(game.get_legal_moves(game.get_opponent(player)))
+    
+#    return center_proximity(x1, y1)*len(game.get_legal_moves(player)) - center_proximity(x2, y2)*len(game.get_legal_moves(game.get_opponent(player)))
+    #return center_distance(x2, y2) - center_distance(x1, y1) + len(game.get_legal_moves(player)) #- len(game.get_legal_moves(game.get_opponent(player)))
 
-    #own_moves = len(game.get_legal_moves(player))
-    #opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-    return 3*len(game.get_legal_moves(player)) - len(game.get_legal_moves(game.get_opponent(player)))
 
 class IsolationPlayer:
     """Base class for minimax and alphabeta agents -- this class is never
@@ -376,7 +407,7 @@ class AlphaBetaPlayer(IsolationPlayer):
         try:
             # The try/except block will automatically catch the exception
             # raised when the timer is about to expire.
-            while True: # depth < float('inf'):
+            while True:
                 best_move = self.alphabeta(game, depth)
                 depth += 1
 
