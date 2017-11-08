@@ -21,9 +21,11 @@ from isolation import Board
 from sample_players import (RandomPlayer, open_move_score,
                             improved_score, center_score)
 from game_agent import (MinimaxPlayer, AlphaBetaPlayer, custom_score,
-                        custom_score_2, custom_score_3)
+                        custom_score_2, custom_score_3, custom_score_4)
 
-NUM_MATCHES = 5  # number of matches against each opponent
+import time
+
+NUM_MATCHES = 25  # number of matches against each opponent
 TIME_LIMIT = 150  # number of milliseconds before timeout
 
 DESCRIPTION = """
@@ -125,6 +127,8 @@ def play_matches(cpu_agents, test_agents, num_matches):
 
 
 def main():
+    
+    start = time.time()
 
     # Define two agents to compare -- these agents will play from the same
     # starting position against the same adversaries in the tournament
@@ -132,7 +136,8 @@ def main():
         Agent(AlphaBetaPlayer(score_fn=improved_score), "AB_Improved"),
         Agent(AlphaBetaPlayer(score_fn=custom_score), "AB_Custom"),
         Agent(AlphaBetaPlayer(score_fn=custom_score_2), "AB_Custom_2"),
-        Agent(AlphaBetaPlayer(score_fn=custom_score_3), "AB_Custom_3")
+        #Agent(AlphaBetaPlayer(score_fn=custom_score_3), "AB_Custom_3"),
+        Agent(AlphaBetaPlayer(score_fn=custom_score_4), "AB_Custom_4")
     ]
 
     # Define a collection of agents to compete against the test agents
@@ -151,6 +156,7 @@ def main():
     print("{:^74}".format("Playing Matches"))
     print("{:^74}".format("*************************"))
     play_matches(cpu_agents, test_agents, NUM_MATCHES)
+    print("\nElapsed time: {0:.1f} minutes".format((time.time() - start) / 60.))
 
 
 if __name__ == "__main__":
