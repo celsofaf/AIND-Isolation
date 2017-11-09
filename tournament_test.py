@@ -25,8 +25,8 @@ from game_agent import (MinimaxPlayer, AlphaBetaPlayer, custom_score,
 
 import time
 
-NUM_MATCHES = 10  # number of matches against each opponent
-TIME_LIMIT = 300  # number of milliseconds before timeout
+NUM_MATCHES = 150  # number of matches against each opponent
+TIME_LIMIT = 500  # number of milliseconds before timeout
 
 DESCRIPTION = """
 This script evaluates the performance of the custom_score evaluation
@@ -156,7 +156,13 @@ def main():
     print("{:^74}".format("Playing Matches"))
     print("{:^74}".format("*************************"))
     play_matches(cpu_agents, test_agents, NUM_MATCHES)
-    print("\nElapsed time: {0:.1f} minutes".format((time.time() - start) / 60.))
+    elapsed = time.time() - start
+    if elapsed / 60. < 60:
+        print("\nElapsed time: {0:.1f} minutes".format(elapsed / 60.))
+    else:
+        hours = int(elapsed) // 3600
+        minutes = elapsed % 3600
+        print("\nElapsed time: {0} hours {1:.1f} minutes".format(hours, minutes))
 
 
 if __name__ == "__main__":
