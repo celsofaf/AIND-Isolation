@@ -35,7 +35,7 @@ def custom_score(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # modified improved_score from sample_players.py, with weights for defensive player
+    # modified improved_score from sample_players.py, with weights for defensive playing
     
     if game.is_loser(player):
         return float("-inf")
@@ -70,10 +70,7 @@ def custom_score_2(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # improved_score + Manhattan Distances to center (inverse)
-    
-#    def center_distance(x, y):
-#        return (x - 3)**2 + (y - 3)**2
+    # modified improved_score from sample_players.py, with weights for agressive playing
     
     if game.is_loser(player):
         return float("-inf")
@@ -81,14 +78,8 @@ def custom_score_2(game, player):
     if game.is_winner(player):
         return float("inf")
     
-#    y1, x1 = game.get_player_location(player)
-#    y2, x2 = game.get_player_location(game.get_opponent(player))
-
     return len(3*game.get_legal_moves(player)) - len(game.get_legal_moves(game.get_opponent(player)))
     
-    #return center_distance(x2, y2) - center_distance(x1, y1) - len(game.get_legal_moves(game.get_opponent(player))) #+ len(game.get_legal_moves(player))
-    #return abs(y1-y2) + abs(x1-x2) + len(game.get_legal_moves(player)) - len(game.get_legal_moves(game.get_opponent(player)))
-
 
 def custom_score_3(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -112,72 +103,19 @@ def custom_score_3(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # improved_score + Manhattan Distances to center (inverse)
-    
-#    def center_distance(x, y):
-#        return (x - 3)**2 + (y - 3)**2
+    # # possible moves + # possible second moves - # opponent possible moves
     
     if game.is_loser(player):
         return float("-inf")
 
     if game.is_winner(player):
         return float("inf")
-    
-#    y1, x1 = game.get_player_location(player)
-#    y2, x2 = game.get_player_location(game.get_opponent(player))
-
-    moves = set(game.get_legal_moves(player))
-    for move in moves.copy():
-        moves = moves.union(game.forecast_move(move).get_legal_moves(player))
-    
-    return len(moves)
-    #return center_distance(x2, y2) - center_distance(x1, y1)# + len(game.get_legal_moves(player)) - len(game.get_legal_moves(game.get_opponent(player)))
-
-
-def custom_score_4(game, player):
-    """Calculate the heuristic value of a game state from the point of view
-    of the given player.
-
-    Note: this function should be called from within a Player instance as
-    `self.score()` -- you should not need to call this function directly.
-
-    Parameters
-    ----------
-    game : `isolation.Board`
-        An instance of `isolation.Board` encoding the current state of the
-        game (e.g., player locations and blocked cells).
-
-    player : object
-        A player instance in the current game (i.e., an object corresponding to
-        one of the player objects `game.__player_1__` or `game.__player_2__`.)
-
-    Returns
-    -------
-    float
-        The heuristic value of the current game state to the specified player.
-    """
-    # improved_score from sample_players.py with weights for aggressive player
-    
-#    def center_proximity(x, y):
-#        return 9 - ((x - 3)**2 + (y - 3)**2)
-    
-    if game.is_loser(player):
-        return float("-inf")
-
-    if game.is_winner(player):
-        return float("inf")
-    
-#    y1, x1 = game.get_player_location(player)
-#    y2, x2 = game.get_player_location(game.get_opponent(player))
     
     moves = set(game.get_legal_moves(player))
     for move in moves.copy():
         moves = moves.union(game.forecast_move(move).get_legal_moves(player))
     
     return len(moves) - len(game.get_legal_moves(game.get_opponent(player)))
-    
-#    return center_proximity(x1, y1)*len(game.get_legal_moves(player)) - center_proximity(x2, y2)*len(game.get_legal_moves(game.get_opponent(player)))
-    #return center_distance(x2, y2) - center_distance(x1, y1) + len(game.get_legal_moves(player)) #- len(game.get_legal_moves(game.get_opponent(player)))
 
 
 class IsolationPlayer:
