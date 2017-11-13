@@ -1,0 +1,39 @@
+-- Tournament #1: 200 matches and 150 milliseconds
+
+                        *************************                         
+                             Playing Matches                              
+                        *************************                         
+
+ Match #   Opponent    AB_Improved   AB_Custom   AB_Custom_2  AB_Custom_3 
+                        Won | Lost   Won | Lost   Won | Lost   Won | Lost 
+    1       Random      382 |  18    380 |  20    383 |  17    370 |  30  
+    2       MM_Open     296 |  104   294 |  106   299 |  101   306 |  94  
+    3      MM_Center    361 |  39    345 |  55    345 |  55    363 |  37  
+    4     MM_Improved   282 |  118   265 |  135   290 |  110   299 |  101 
+    5       AB_Open     216 |  184   219 |  181   216 |  184   207 |  193 
+    6      AB_Center    230 |  170   232 |  168   247 |  153   232 |  168 
+    7     AB_Improved   210 |  190   208 |  192   209 |  191   192 |  208 
+--------------------------------------------------------------------------
+           Win Rate:      70.6%        69.4%        71.0%        70.3%    
+
+Elapsed time: 9 hours 28.0 minutes
+
+
+                        *************************                         
+                             Playing Matches                              
+                        *************************                         
+
+ Match #   Opponent    AB_Improved   AB_Custom   AB_Custom_2  AB_Custom_3 
+                        Won | Lost   Won | Lost   Won | Lost   Won | Lost 
+    1       Random      374 |  26    369 |  31    372 |  28    362 |  38  
+    2       MM_Open     301 |  99    312 |  88    296 |  104   304 |  96  
+    3      MM_Center    351 |  49    356 |  44    337 |  63    337 |  63  
+    4     MM_Improved   289 |  111   282 |  118   304 |  96    280 |  120 
+    5       AB_Open     200 |  200   196 |  204   221 |  179   201 |  199 
+    6      AB_Center    209 |  191   212 |  188   223 |  177   211 |  189 
+    7     AB_Improved   199 |  201   205 |  195   196 |  204   203 |  197 
+--------------------------------------------------------------------------
+           Win Rate:      68.7%        69.0%        69.6%        67.8%    
+
+Elapsed time: 28 hours 41.8 minutes
+

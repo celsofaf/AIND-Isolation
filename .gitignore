@@ -3,6 +3,7 @@
 
 *.json
 *.zip
+*~lock*
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
