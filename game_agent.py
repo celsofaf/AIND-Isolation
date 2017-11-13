@@ -45,7 +45,7 @@ def custom_score(game, player):
 
     #own_moves = len(game.get_legal_moves(player))
     #opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-    return len(game.get_legal_moves(player)) - 3*len(game.get_legal_moves(game.get_opponent(player)))
+    return float(len(game.get_legal_moves(player)) - 3*len(game.get_legal_moves(game.get_opponent(player))))
 
 
 def custom_score_2(game, player):
@@ -78,7 +78,7 @@ def custom_score_2(game, player):
     if game.is_winner(player):
         return float("inf")
     
-    return len(3*game.get_legal_moves(player)) - len(game.get_legal_moves(game.get_opponent(player)))
+    return float(len(3*game.get_legal_moves(player)) - len(game.get_legal_moves(game.get_opponent(player))))
     
 
 def custom_score_3(game, player):
@@ -115,7 +115,7 @@ def custom_score_3(game, player):
     for move in moves.copy():
         moves = moves.union(game.forecast_move(move).get_legal_moves(player))
     
-    return len(moves) - len(game.get_legal_moves(game.get_opponent(player)))
+    return float(len(moves) - len(game.get_legal_moves(game.get_opponent(player))))
 
 
 class IsolationPlayer:
